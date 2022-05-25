@@ -1,37 +1,34 @@
 import { useState } from 'react';
 import { data, IItem } from './data';
 import './styles.css';
+import { ThemeProvider, useTheme } from './Context';
 
 type Theme = 'light' | 'dark';
 
 export function App() {
     const [currentTheme, setCurrentTheme] = useState<Theme>('light');
-
     function changeTheme() {
         setCurrentTheme(currentTheme === 'light' ? 'dark' : 'light');
     }
-
     const className = `app app_${currentTheme}`;
     return (
-        <div className={className}>
-            <button onClick={changeTheme}>Toggle theme</button>
-            <List theme={currentTheme} data={data} />
-        </div>
+        <ThemeProvider theme={currentTheme}>
+            <div className={className}>
+                <button onClick={changeTheme}>Toggle theme</button>
+                <List data={data} />
+            </div>
+        </ThemeProvider>
     );
 }
 
-function List(props: { theme: Theme; data: IItem[] }) {
-    return (
-        <div>
-            {data.map((item) => (
-                <ListItem
-                    theme={props.theme}
-                    caption={item.name}
-                    key={item.id}
-                />
-            ))}
-        </div>
-    );
+function List(props: { data: IItem[] }) {
+    const theme = useTheme();
+    function renderItems(data: IItem[]) {
+        return data.map((item) => (
+            <ListItem theme={theme} caption={item.name} key={item.id} />
+        ));
+    }
+    return <div>{renderItems(data)}</div>;
 }
 
 function ListItem(props: { theme: Theme; caption: string }) {

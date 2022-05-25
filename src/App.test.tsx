@@ -18,6 +18,7 @@ describe('Контекст', () => {
     it('ThemeProvider спускает тему через контекст, useTheme получает тему из контекста', () => {
         function Consumer() {
             const theme = useTheme();
+
             return <div>{theme}</div>;
         }
 
